@@ -1,6 +1,6 @@
 echo "" 
 echo "--> delete namespace"
-echo "kubectl delete namesapce foodmag-app"
+echo "kubectl delete namespace foodmag-app"
 kubectl delete namespace foodmag-app
 echo "" 
 echo "--> application status"
