@@ -11,3 +11,11 @@ echo "--> deploy storageOS storageClass / 1 replica / encryption on"
 echo "kubectl apply -f storageClass_basic.yaml"
 kubectl apply -f storageClass_rep1_encryption.yaml
 echo "" 
+echo "--> check PVC"
+echo "kubectl get pvc -A"
+kubectl get pvc -A
+echo "" 
+echo "--> check PVs"
+echo "kubectl get pv"
+kubectl get pv
+echo ""
