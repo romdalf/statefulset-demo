@@ -1,0 +1,25 @@
+echo "" 
+echo "--> delete front-end statefulset"
+echo "kubectl delete -n foodmag-app statefulset.apps/foodmag-app-fe"
+kubectl delete -n foodmag-app statefulset.apps/foodmag-app-fe
+echo "" 
+echo "--> delete back-end statefulset"
+echo "kubectl delete -n foodmag-app statefulset.apps/foodmag-app-fe"
+kubectl delete -n foodmag-app statefulset.apps/foodmag-app-db
+echo "" 
+echo "--> application status"
+echo "kubectl get pods -n foodmag-app"
+kubectl get pods -n foodmag-app 
+echo "" 
+echo "--> check PVC"
+echo "kubectl get pvc -A"
+kubectl get pvc -A
+echo "" 
+echo "--> check PVs"
+echo "kubectl get pv"
+kubectl get pv
+echo ""
+echo "--> check PVs from storageOS view"
+echo "kubectl get pv"
+kubectl exec -n kube-system -it cli -- storageos get volumes -n foodmag-app
+echo ""
