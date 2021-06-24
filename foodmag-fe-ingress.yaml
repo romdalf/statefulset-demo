@@ -8,14 +8,14 @@ metadata:
     env: prod
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: gcp-cert
+    cert-manager.io/cluster-issuer: gke-cert
 spec:
   tls:
   - hosts:
-    - foodmag-app.gcp.beezy.sh
+    - foodmag-app.gke.beezy.sh
     secretName: foodmag-app-tls
   rules:
-  - host: "foodmag-app.gcp.beezy.sh"
+  - host: "foodmag-app.gke.beezy.sh"
     http:
       paths:
       - pathType: Prefix
