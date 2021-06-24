@@ -1,3 +1,4 @@
+echo "" 
 echo "--> add helm repo for ingress-nginx"
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 echo "--> install nginx-ingress"
@@ -11,4 +12,5 @@ helm repo update
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0 --set installCRDs=true
 echo "--> deploy certmanager"
 kubectl apply -f gke_certmanager_issuer.yaml 
+echo "" 
 
