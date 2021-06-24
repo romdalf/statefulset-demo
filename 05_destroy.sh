@@ -15,4 +15,7 @@ echo "--> check PVs"
 echo "kubectl get pv"
 kubectl get pv
 echo ""
-
+echo "--> check PVs from storageOS view"
+echo "kubectl get pv"
+kubectl exec -n kube-system -it cli -- storageos get volumes -n foodmag-app
+echo ""
