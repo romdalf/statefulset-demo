@@ -9,7 +9,7 @@ kubectl delete -n foodmag-app statefulset.apps/foodmag-app-db
 echo "" 
 echo "--> application status"
 echo "kubectl get pods -n foodmag-app"
-kubectl get pods -n foodmag-app 
+kubectl get pods -n foodmag-app -w
 echo "" 
 echo "--> check PVC"
 echo "kubectl get pvc -A"
