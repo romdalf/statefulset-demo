@@ -59,6 +59,7 @@ spec:
         labels:
           app: foodmag-app-db
           env: prod
+          storageos.com/encryption: "true"
       spec:
         accessModes: ["ReadWriteOnce"]
         storageClassName: "storageos-basic"
