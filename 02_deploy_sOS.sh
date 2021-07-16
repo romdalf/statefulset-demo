@@ -29,7 +29,7 @@ set -euo pipefail
 # Failing back to a manual entry if cURL not present (I know!).
 if ! command -v curl &> /dev/null 
 then
-    OPERATOR_VERSION='v2.4.0-rc.1'
+    OPERATOR_VERSION='v2.4.1'
 else
     OPERATOR_VERSION=`curl --silent "https://api.github.com/repos/storageos/cluster-operator/releases/latest" |awk -F '"' '/tag_name/{print $4}'`
 fi
