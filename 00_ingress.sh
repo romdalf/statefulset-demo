@@ -1,3 +1,4 @@
+echo "Preparing the cluster with Ingress for TLS endpoint"
 echo "" 
 echo "--> add helm repo for ingress-nginx"
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
