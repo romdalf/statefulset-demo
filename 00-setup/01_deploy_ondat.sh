@@ -379,14 +379,14 @@ echo -ne ".${GREEN}OK${NC}\n"
 
 # Now that we have an etcd cluster starting, we need to install the Ondat
 # operator, which will manage the install of StorageOS itself.
-echo -ne "  Creation ${BLUE}Ondat${NC} operator deployment................"
+echo -ne "  Creation ${BLUE}Ondat${NC} operator deployment...................."
 kubectl create --filename=https://github.com/storageos/cluster-operator/releases/download/${OPERATOR_VERSION}/storageos-operator.yaml 1>/dev/null
 
 echo -ne ".${GREEN}OK${NC} (${RED}${OPERATOR_VERSION}${NC})\n"
 
 
 # Wait for the operator to become ready
-echo -ne "    Waiting on ${BLUE}Ondat${NC} operator to be running.........."
+echo -ne "    Waiting on ${BLUE}Ondat${NC} operator to be running.............."
 # phase="$(kubectl -n storageos-operator get pod -l${STORAGEOS_OPERATOR_LABEL} --no-headers -ocustom-columns=status:.status.phase)"
 # while ! grep -q "Running" <(echo "${phase}"); do
 #     sleep 2
@@ -404,7 +404,7 @@ echo -ne ".${GREEN}OK${NC}\n"
 
 
 # The Ondat secret contains credentials for our API, as well as CSI
-echo -ne "  Creating ${BLUE}Ondat${NC} API secret........................."
+echo -ne "  Creating ${BLUE}Ondat${NC} API secret............................."
 kubectl create -f- 1>/dev/null<<END
 apiVersion: v1
 kind: Secret
@@ -442,7 +442,7 @@ echo -ne ".${GREEN}OK${NC}\n"
 # not deploying in kube-system - brace yourself!
 if [[ ! "${STOS_NAMESPACE}" == "kube-system" ]];
 then 
-  echo -ne "  Creating ${BLUE}Ondat${NC} cluster namespace........"
+  echo -ne "  Creating ${BLUE}Ondat${NC} cluster namespace............"
   kubectl create namespace ${STOS_NAMESPACE} 1>/dev/null
   echo -ne ".${GREEN}OK${NC} (${RED}${STOS_NAMESPACE}${NC})\n"
 fi
@@ -481,7 +481,7 @@ echo -ne ".${GREEN}OK${NC} (${RED}${STOS_NAMESPACE}${NC})\n"
 # echo -ne ".${GREEN}OK${NC}\n"
 
 
-printf "    Waiting on ${BLUE}Ondat${NC} pods to be running.............."
+printf "    Waiting on ${BLUE}Ondat${NC} pods to be running.................."
 until phase=`kubectl --namespace=${STOS_NAMESPACE} describe storageoscluster ${STOS_CLUSTERNAME} |grep -q "Running" 1>/dev/null`; 
 do
    spin
@@ -493,7 +493,7 @@ echo -ne ".${GREEN}OK${NC}\n"
 # Now that we have a working Ondat cluster, we can deploy a pod to run the
 # cli inside the cluster. When we want to access the cli, we can kubectl exec
 # into this pod.
-echo -ne "  Deploying ${BLUE}Ondat${NC} CLI as a pod......................"
+echo -ne "  Deploying ${BLUE}Ondat${NC} CLI as a pod.........................."
 kubectl create -f- 1>/dev/null<<END
 ---
 apiVersion: v1
@@ -520,7 +520,7 @@ echo -ne ".${GREEN}OK${NC}\n"
 
 
 # Check if Ondat cli is running
-echo -ne "    Waiting on ${BLUE}Ondat${NC} CLI pod to be running..........."
+echo -ne "    Waiting on ${BLUE}Ondat${NC} CLI pod to be running..............."
 # phase="$(kubectl --namespace=${STOS_NAMESPACE} describe pod cli)"
 # while ! grep -q "Running" <(echo "${phase}"); do
 #     sleep 10
