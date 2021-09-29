@@ -32,7 +32,7 @@ spec:
     metadata:
       annotations:
         backup.velero.io/backup-volumes: foodmag-app-fe-pvc 
-        pre.hook.backup.velero.io/container=foodmag-app-fe
+        pre.hook.backup.velero.io/container: foodmag-app-fe
         pre.hook.backup.velero.io/command: '["/sbin/fsfreeze", "--freeze", "/var/www/html"]'
       labels:
         app: foodmag-app-fe
