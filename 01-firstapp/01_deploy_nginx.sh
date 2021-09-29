@@ -4,6 +4,7 @@ echo "--> Sending the yaml definition to Kubernetes..."
 echo "kubectl apply -f nginx.yaml"
 kubectl apply -f nginx.yaml
 echo "" 
+sleep 10
 echo "--> Checking the status of the statefulset"
 echo "kubectl get all -n web"
 kubectl get all -n web
