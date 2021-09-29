@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: web
+  name: web-npv
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: web-service
-  namespace: web
+  namespace: web-npv
   labels:
     app: nginx
 spec:
@@ -20,10 +20,10 @@ spec:
     app: nginx
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: web
-  namespace: web
+  namespace: web-npv
 spec:
   selector:
     matchLabels:
@@ -35,22 +35,10 @@ spec:
       labels:
         app: nginx
     spec:
-      terminationGracePeriodSeconds: 10
       containers:
         - name: nginx
           image: k8s.gcr.io/nginx-slim:0.8
           ports:
             - containerPort: 80
               name: web
-          volumeMounts:
-            - name: nginx-pvc
-              mountPath: /usr/share/nginx/html
-  volumeClaimTemplates:
-    - metadata:
-        name: nginx-pvc
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: "fast"
-        resources:
-          requests:
-            storage: 1Gi
+
