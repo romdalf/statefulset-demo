@@ -442,14 +442,14 @@ echo -ne ".${GREEN}OK${NC}\n"
 # not deploying in kube-system - brace yourself!
 if [[ ! "${STOS_NAMESPACE}" == "kube-system" ]];
 then 
-  echo -ne "  Creating STORAGE${GREEN}OS${NC} cluster namespace........"
+  echo -ne "  Creating ${BLUE}Ondat${NC} cluster namespace........"
   kubectl create namespace ${STOS_NAMESPACE} 1>/dev/null
   echo -ne ".${GREEN}OK${NC} (${RED}${STOS_NAMESPACE}${NC})\n"
 fi
 
 # In the Ondat CR we declare the DNS name for the etcd deployment and
 # service we created earlier.
-echo -ne "  Creating STORAGE${GREEN}OS${NC} cluster............................"
+echo -ne "  Creating ${BLUE}Ondat${NC} cluster............................"
 kubectl create -f- 1>/dev/null<<END
 ---
 apiVersion: storageos.com/v1
