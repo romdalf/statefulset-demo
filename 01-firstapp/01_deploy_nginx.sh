@@ -9,7 +9,7 @@ echo -e "Deploying our first application!"
 echo ""
 echo -e "--> Sending the yaml definition to Kubernetes..."
 echo -e "${BLUE}kubectl apply -f 01-firstapp/nginx.yaml${NC}"
-kubectl apply -f nginx.yaml
+kubectl apply -f 01-firstapp/nginx.yaml
 echo "" 
 sleep 10
 echo -e "--> Checking the status of the statefulset"
