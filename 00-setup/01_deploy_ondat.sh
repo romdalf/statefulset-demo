@@ -449,7 +449,7 @@ fi
 
 # In the Ondat CR we declare the DNS name for the etcd deployment and
 # service we created earlier.
-echo -ne "  Creating ${BLUE}Ondat${NC} cluster............................"
+echo -ne "  Creating ${BLUE}Ondat${NC} cluster................................"
 kubectl create -f- 1>/dev/null<<END
 ---
 apiVersion: storageos.com/v1
