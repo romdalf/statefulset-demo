@@ -10,8 +10,9 @@ echo ""
 echo -e "--> Sending the yaml definition to Kubernetes..."
 echo -e "${BLUE}kubectl apply -f 01-firstapp/nginx.yaml${NC}"
 kubectl apply -f 01-firstapp/nginx.yaml
-echo "" 
-sleep 10
+echo ""
+echo -e "--> waiting 5 seconds..." 
+sleep 5
 echo -e "--> Checking the status of the statefulset"
 echo -e "${BLUE}kubectl get all -n web${NC}"
 kubectl get all -n web
