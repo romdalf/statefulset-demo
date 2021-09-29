@@ -150,14 +150,14 @@ then
     echo -e "Usage: ./$0 [OPTION]..."
     echo -e "${RED}Install a ${NC}STORAGE${GREEN}OS${RED} Self-Evaluation cluster on Kubernetes.${NC}"
     echo 
-    echo -e "  -c       ${NC}STORAGE${GREEN}OS${NC} cluser name."
-    echo -e "  -v       ${NC}STORAGE${GREEN}OS${NC} version to deploy."
+    echo -e "  -c       ${BLUE}Ondat${NC} cluser name."
+    echo -e "  -v       ${BLUE}Ondat${NC} version to deploy."
     echo -e "           Check https://github.com/storageos/cluster-operator/releases"
     echo 
-    echo "Eg: ./deploy-storageos-cluster.sh -c demo-cluster -v ${STOS_VERSION}"
+    echo "Eg: ./$0 -c demo-cluster -v ${STOS_VERSION}"
     echo "    curl -fsSL https://storageos.run | bash -s -- -c demo-cluster -v ${STOS_VERSION}"
     echo
-    echo "Issues: https://github.com/storageos/storageos.github.io"
+    echo "Issues: https://github.com/rovandep/statefulset-demo"
     echo
     exit
 fi
