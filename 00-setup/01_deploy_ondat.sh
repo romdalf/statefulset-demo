@@ -69,8 +69,8 @@ endspin() {
 
 # Welcoming Ondat users :)
 echo 
-echo -e "${RED}Welcome to the ${NC}${BLUE}Ondat${RED} self-evaluation installation script.${NC}"
-echo -e "${BLUE}Self-Evaluation guide: https://docs.storageos.com/docs/self-eval${NC}"
+echo -e "${NC}Welcome to the ${BLUE}Ondat${NC} self-evaluation installation script.${NC}"
+echo -e "${NC}Self-Evaluation guide: https://docs.storageos.com/docs/self-eval${NC}"
 echo -e "   ${RED}This deployment is suitable for testing purposes only.${NC}"
 echo 
 
