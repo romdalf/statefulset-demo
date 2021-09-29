@@ -90,7 +90,7 @@ fi
 echo -ne ".${GREEN}OK${NC}\n"
 
 # Checking for the minimum node count (3)
-echo -ne "  Checking node count (minimum 3)..........................."
+echo -ne "  Checking node count (minimum 3)......................."
 NODECOUNT=`kubectl get nodes -o name | wc -l`
 if [ ${NODECOUNT} -lt 3 ]
 then 
@@ -100,7 +100,7 @@ fi
 echo -ne ".${GREEN}OK${NC} (${RED}${NODECOUNT}${NC})\n"
 
 # Checking for an existing Ondat cluster on the kubernetes target
-echo -ne "  Checking for exiting ${BLUE}Ondat${NC} cluster................"
+echo -ne "  Checking for exiting ${BLUE}Ondat${NC} cluster...................."
 if kubectl get storageoscluster --all-namespaces -o name &>/dev/null;
 then
     echo -ne "${RED}YES${NC}\n"
