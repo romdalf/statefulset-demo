@@ -14,7 +14,7 @@ echo -e "${BLUE}kubectl apply -f 01-firstapp/nginx_npv.yaml${NC}"
 kubectl apply -f 01-firstapp/nginx_npv.yaml
 echo ""
 echo -e "--> waiting 5 seconds..."
-sleep 5
+sleep 10
 echo ""
 echo -e "--> Checking the status of the statefulset..."
 echo -e "${BLUE}kubectl get all -n web-npv${NC}"
@@ -29,17 +29,11 @@ echo -e "${BLUE}kubectl apply -f 01-firstapp/nginx_wpv.yaml${NC}"
 kubectl apply -f 01-firstapp/nginx_wpv.yaml
 echo ""
 echo -e "--> waiting 5 seconds..."
-sleep 5
+sleep 10
 echo ""
 echo -e "--> Checking the status of the statefulset..."
 echo -e "${BLUE}kubectl get all -n web-npv${NC}"
 kubectl get all -n web-wpv 
-
-
-
-
-
-
 
 
 
