@@ -538,10 +538,6 @@ echo -ne ".${GREEN}OK${NC}\n"
 echo 
 echo -e "${NC}Your ${NC}${BLUE}Ondat${NC} Cluster ${GREEN}now is up and running!"
 echo
-echo -e "${NC}Now would be a good time to deploy your first volume - see${NC}"
-echo -e "${NC}   https://docs.storageos.com/docs/self-eval/#a-namestorageosvolumeaprovision-a-storageos-volume${NC}"
-echo -e "${NC}for an example of how to mount a ${BLUE}Ondat${NC} volume in a pod${NC}"
-echo
 echo -e "${NC}Get your Personal license - see${NC}"
 echo -e "${NC}   https://docs.storageos.com/docs/operations/licensing/${NC}"
 echo -e "${RED}A cluster can run unlicensed for 24 hours. Normal functioning of the cluster"
