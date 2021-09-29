@@ -15,7 +15,6 @@ spec:
   type: ClusterIP
   ports:
   - port: 80
-    name: web
   selector:
     app: nginx
 ---
@@ -41,7 +40,6 @@ spec:
           image: k8s.gcr.io/nginx-slim:0.8
           ports:
             - containerPort: 80
-              name: web
           volumeMounts:
             - name: nginx-pvc
               mountPath: /usr/share/nginx/html
