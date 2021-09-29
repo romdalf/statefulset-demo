@@ -90,7 +90,7 @@ fi
 echo -ne ".${GREEN}OK${NC}\n"
 
 # Checking for the minimum node count (3)
-echo -ne "  Checking node count (minimum 3)......................."
+echo -ne "  Checking node count (minimum 3)..........................."
 NODECOUNT=`kubectl get nodes -o name | wc -l`
 if [ ${NODECOUNT} -lt 3 ]
 then 
@@ -114,7 +114,7 @@ fi
 
 # Summary of what is on the menu for deployment today
 echo 
-echo -e "${NC}The script will deploy a ${NC}${BLUE}Ondat cluster: ${NC}"
+echo -e "${NC}The script will deploy a ${BLUE}Ondat${NC} cluster: ${NC}"
 echo -e "  ${BLUE}Ondat${NC} cluster named ${RED}${STOS_CLUSTERNAME}${GREEN}.${NC}"
 echo -e "  ${BLUE}Ondat${NC} version ${RED}${STOS_VERSION}${NC} into namespace ${RED}${STOS_NAMESPACE}${GREEN}.${NC}"
 
