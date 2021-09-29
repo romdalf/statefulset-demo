@@ -13,7 +13,7 @@ echo -e "--> Sending nginx_npv.yaml to Kubernetes..."
 echo -e "${BLUE}kubectl apply -f 01-firstapp/nginx_npv.yaml${NC}"
 kubectl apply -f 01-firstapp/nginx_npv.yaml
 echo ""
-echo -e "--> waiting 5 seconds..."
+echo -e "--> waiting 10 seconds..."
 sleep 10
 echo ""
 echo -e "--> Checking the status of the statefulset..."
@@ -28,7 +28,7 @@ echo -e "--> Sending nginx_wpv.yaml to Kubernetes..."
 echo -e "${BLUE}kubectl apply -f 01-firstapp/nginx_wpv.yaml${NC}"
 kubectl apply -f 01-firstapp/nginx_wpv.yaml
 echo ""
-echo -e "--> waiting 5 seconds..."
+echo -e "--> waiting 10 seconds..."
 sleep 10
 echo ""
 echo -e "--> Checking the status of the statefulset..."
