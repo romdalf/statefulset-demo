@@ -11,7 +11,7 @@ echo -e "--> what's in the box?"
 echo -e "${BLUE}kubectl get nodes${NC}"
 kubectl get nodes
 echo ""
-echo -e "--> any storageOS in?"
+echo -e "--> any ${BLUE}Ondat${NC} in?"
 echo -e "${BLUE}kubectl get all -A |grep storageos${NC}"
 kubectl get all -A |grep storageos
 echo ""
