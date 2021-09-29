@@ -31,6 +31,11 @@ spec:
     metadata:
       annotations:
         backup.velero.io/backup-volumes: foodmag-app-db-pvc
+        post.hook.restore.velero.io/container: foodmag-app-db
+        post.hook.restore.velero.io/command: '["/bin/bash", "-c", "psql < /backup/backup.sql"]'
+        post.hook.restore.velero.io/wait-timeout: 5m 
+        post.hook.restore.velero.io/exec-timeout: 45s
+        post.hook.restore.velero.io/on-error: Continue
       labels:
         app: foodmag-app-db
         env: prod
