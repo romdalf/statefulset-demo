@@ -7,15 +7,15 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
-  name: web-service
+  name: web-npv-service
   namespace: web-npv
   labels:
     app: nginx
 spec:
+  type: ClusterIP
   ports:
   - port: 80
     name: web
-  clusterIP: None
   selector:
     app: nginx
 ---
@@ -28,7 +28,6 @@ spec:
   selector:
     matchLabels:
       app: nginx
-  serviceName: web-service
   replicas: 1
   template:
     metadata:
