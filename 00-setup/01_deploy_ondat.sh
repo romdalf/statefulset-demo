@@ -1,15 +1,15 @@
 #!/bin/bash
 #############################################################################
-# Script Name  :   deploy-storageos-cluster.sh                                                                                           
-# Description  :   Install StorageOS Self-Evaluation Cluster                                                                              
+# Script Name  :   01_deploy_ondat.sh                                                                                           
+# Description  :   Install Ondat Self-Evaluation Cluster                                                                              
 # Args         :   
-# Author       :   StorageOS
-# Issues       :   Issues&PR https://github.com/storageos/storageos.github.io
+# Author       :   Ondat
+# Issues       :   Issues&PR https://github.com/rovandep/statefulset-demo.git
 #############################################################################
 
 set -euo pipefail
 
-# StorageOS Self-Evaluation This script will install StorageOS onto a
+# Ondat Self-Evaluation This script will install Ondat onto a
 # Kubernetes cluster
 # 
 # This script is based on the installation instructions in our self-evaluation
@@ -54,6 +54,7 @@ STOS_VERSION=${OPERATOR_VERSION}
 # Define some colours for later
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+BLUE='\033[1;34m'
 NC='\033[0m' # No Color
 
 # spin the wheel to avoid nervous breakdown during waiting time
@@ -66,15 +67,15 @@ endspin() {
     echo -ne '\b \b'
 }
 
-# Welcoming STORAGEOS users :)
+# Welcoming Ondat users :)
 echo 
-echo -e "${RED}Welcome to the ${NC}STORAGE${GREEN}OS${RED} self-evaluation installation script.${NC}"
-echo -e "${GREEN}Self-Evaluation guide: https://docs.storageos.com/docs/self-eval${NC}"
+echo -e "${RED}Welcome to the ${NC}${BLUE}Ondat${RED} self-evaluation installation script.${NC}"
+echo -e "${BLUE}Self-Evaluation guide: https://docs.storageos.com/docs/self-eval${NC}"
 echo -e "   ${RED}This deployment is suitable for testing purposes only.${NC}"
 echo 
 
 # Checking and exiting if requirements are not met.
-echo -e "${GREEN}Checking requirements:${NC}"
+echo -e "${BLUE}Checking requirements:${NC}"
 
 # Checking if kubectl is present!
 echo -ne "  Checking Kubectl......................................"
@@ -98,12 +99,12 @@ then
 fi 
 echo -ne ".${GREEN}OK${NC} (${RED}${NODECOUNT}${NC})\n"
 
-# Checking for an existing STORAGEOS cluster on the kubernetes target
-echo -ne "  Checking for exiting STORAGE${GREEN}OS${NC} cluster................"
+# Checking for an existing Ondat cluster on the kubernetes target
+echo -ne "  Checking for exiting ${BLUE}Ondat${NC} cluster................"
 if kubectl get storageoscluster --all-namespaces -o name &>/dev/null;
 then
     echo -ne "${RED}YES${NC}\n"
-    echo -e "  ${RED}/!\ ${NC}STORAGE${GREEN}OS ${NC}cluster${RED} already deployed on this Kubernetes cluster."
+    echo -e "  ${RED}/!\ ${NC}${BLUE}Ondat ${NC}cluster${RED} already deployed on this Kubernetes cluster."
     echo
     exit
     # todo: include a clean-up option from this breaking point
@@ -113,9 +114,9 @@ fi
 
 # Summary of what is on the menu for deployment today
 echo 
-echo -e "${GREEN}The script will deploy a ${NC}STORAGE${GREEN}OS cluster: ${NC}"
-echo -e "  STORAGE${GREEN}OS${NC} cluster named ${RED}${STOS_CLUSTERNAME}${GREEN}.${NC}"
-echo -e "  STORAGE${GREEN}OS${NC} version ${RED}${STOS_VERSION}${NC} into namespace ${RED}${STOS_NAMESPACE}${GREEN}.${NC}"
+echo -e "${NC}The script will deploy a ${NC}${Blue}Ondat cluster: ${NC}"
+echo -e "  ${BLUE}Ondat${NC} cluster named ${RED}${STOS_CLUSTERNAME}${GREEN}.${NC}"
+echo -e "  ${BLUE}Ondat${NC} version ${RED}${STOS_VERSION}${NC} into namespace ${RED}${STOS_NAMESPACE}${GREEN}.${NC}"
 
 # RC? Let's have a bit of a warning there
 if [[ ${STOS_VERSION} =~ .*rc.* ]];
@@ -146,7 +147,7 @@ echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
     echo 
-    echo -e "Usage: ./deploy-storageos-cluster.sh [OPTION]..."
+    echo -e "Usage: ./$0 [OPTION]..."
     echo -e "${RED}Install a ${NC}STORAGE${GREEN}OS${RED} Self-Evaluation cluster on Kubernetes.${NC}"
     echo 
     echo -e "  -c       ${NC}STORAGE${GREEN}OS${NC} cluser name."
@@ -162,7 +163,7 @@ then
 fi
 
 # Starting deployment
-echo -e "${GREEN}Starting ${NC}STORAGE${GREEN}OS deployment:${NC}"
+echo -e "${NC}Starting ${NC}${BLUE}Ondat deployment:${NC}"
 echo -ne "  Is it OpenShift?......................................"
 
 # If running in Openshift, an SCC is needed to start Pods
@@ -319,7 +320,7 @@ echo -ne ".${GREEN}OK${NC}\n"
 # Create etcd CustomResource
 # This will install 3 etcd pods into the cluster using ephemeral storage. It
 # will also create a service endpoint, by which we can refer to the cluster in
-# the installation for StorageOS itself below.
+# the installation for Ondat itself below.
 echo -ne "  Creating etcd cluster................................."
 kubectl -n ${ETCD_NAMESPACE} create -f- 1>/dev/null<<END
 apiVersion: "etcd.database.coreos.com/v1beta2"
@@ -376,16 +377,16 @@ END
 echo -ne ".${GREEN}OK${NC}\n"
 
 
-# Now that we have an etcd cluster starting, we need to install the StorageOS
+# Now that we have an etcd cluster starting, we need to install the Ondat
 # operator, which will manage the install of StorageOS itself.
-echo -ne "  Creation STORAGE${GREEN}OS${NC} operator deployment................"
+echo -ne "  Creation ${BLUE}Ondat${NC} operator deployment................"
 kubectl create --filename=https://github.com/storageos/cluster-operator/releases/download/${OPERATOR_VERSION}/storageos-operator.yaml 1>/dev/null
 
 echo -ne ".${GREEN}OK${NC} (${RED}${OPERATOR_VERSION}${NC})\n"
 
 
 # Wait for the operator to become ready
-echo -ne "    Waiting on STORAGE${GREEN}OS${NC} operator to be running.........."
+echo -ne "    Waiting on ${BLUE}Ondat${NC} operator to be running.........."
 # phase="$(kubectl -n storageos-operator get pod -l${STORAGEOS_OPERATOR_LABEL} --no-headers -ocustom-columns=status:.status.phase)"
 # while ! grep -q "Running" <(echo "${phase}"); do
 #     sleep 2
@@ -402,8 +403,8 @@ echo -ne ".${GREEN}OK${NC}\n"
 
 
 
-# The StorageOS secret contains credentials for our API, as well as CSI
-echo -ne "  Creating STORAGE${GREEN}OS${NC} API secret........................."
+# The Ondat secret contains credentials for our API, as well as CSI
+echo -ne "  Creating ${BLUE}Ondat${NC} API secret........................."
 kubectl create -f- 1>/dev/null<<END
 apiVersion: v1
 kind: Secret
@@ -431,7 +432,7 @@ END
 echo -ne ".${GREEN}OK${NC}\n"
 
 # Now that we have the operator installed, and a secret defined, it is time to
-# install StorageOS itself. We default to the kube-system namespace, which
+# install Ondat itself. We default to the kube-system namespace, which
 # gives us some protection against eviction by the Kubelet under conditions of
 # contention.
 
@@ -446,7 +447,7 @@ then
   echo -ne ".${GREEN}OK${NC} (${RED}${STOS_NAMESPACE}${NC})\n"
 fi
 
-# In the StorageOS CR we declare the DNS name for the etcd deployment and
+# In the Ondat CR we declare the DNS name for the etcd deployment and
 # service we created earlier.
 echo -ne "  Creating STORAGE${GREEN}OS${NC} cluster............................"
 kubectl create -f- 1>/dev/null<<END
@@ -480,7 +481,7 @@ echo -ne ".${GREEN}OK${NC} (${RED}${STOS_NAMESPACE}${NC})\n"
 # echo -ne ".${GREEN}OK${NC}\n"
 
 
-printf "    Waiting on STORAGE${GREEN}OS${NC} pods to be running.............."
+printf "    Waiting on ${BLUE}Ondat${NC} pods to be running.............."
 until phase=`kubectl --namespace=${STOS_NAMESPACE} describe storageoscluster ${STOS_CLUSTERNAME} |grep -q "Running" 1>/dev/null`; 
 do
    spin
@@ -489,10 +490,10 @@ endspin
 echo -ne ".${GREEN}OK${NC}\n"
 
 
-# Now that we have a working StorageOS cluster, we can deploy a pod to run the
+# Now that we have a working Ondat cluster, we can deploy a pod to run the
 # cli inside the cluster. When we want to access the cli, we can kubectl exec
 # into this pod.
-echo -ne "  Deploying STORAGE${GREEN}OS${NC} CLI as a pod......................"
+echo -ne "  Deploying ${BLUE}Ondat${NC} CLI as a pod......................"
 kubectl create -f- 1>/dev/null<<END
 ---
 apiVersion: v1
@@ -518,8 +519,8 @@ END
 echo -ne ".${GREEN}OK${NC}\n"
 
 
-# Check if StorageOS cli is running
-echo -ne "    Waiting on STORAGE${GREEN}OS${NC} CLI pod to be running..........."
+# Check if Ondat cli is running
+echo -ne "    Waiting on ${BLUE}Ondat${NC} CLI pod to be running..........."
 # phase="$(kubectl --namespace=${STOS_NAMESPACE} describe pod cli)"
 # while ! grep -q "Running" <(echo "${phase}"); do
 #     sleep 10
@@ -535,19 +536,19 @@ endspin
 echo -ne ".${GREEN}OK${NC}\n"
 
 echo 
-echo -e "${GREEN}Your ${NC}STORAGE${GREEN}OS${NC} Cluster ${GREEN}now is up and running!"
+echo -e "${NC}Your ${NC}${BLUE}Ondat${NC} Cluster ${GREEN}now is up and running!"
 echo
-echo -e "${GREEN}Now would be a good time to deploy your first volume - see${NC}"
-echo -e "${GREEN}   https://docs.storageos.com/docs/self-eval/#a-namestorageosvolumeaprovision-a-storageos-volume${NC}"
-echo -e "${GREEN}for an example of how to mount a StorageOS volume in a pod${NC}"
+echo -e "${NC}Now would be a good time to deploy your first volume - see${NC}"
+echo -e "${NC}   https://docs.storageos.com/docs/self-eval/#a-namestorageosvolumeaprovision-a-storageos-volume${NC}"
+echo -e "${NC}for an example of how to mount a ${BLUE}Ondat${NC} volume in a pod${NC}"
 echo
-echo -e "${GREEN}Get your Free Forever Developer license - see${NC}"
-echo -e "${GREEN}   https://docs.storageos.com/docs/operations/licensing/${NC}"
+echo -e "${NC}Get your Personal license - see${NC}"
+echo -e "${NC}   https://docs.storageos.com/docs/operations/licensing/${NC}"
 echo -e "${RED}A cluster can run unlicensed for 24 hours. Normal functioning of the cluster"
-echo -e "${RED}can be unlocked by applying for a Free Forever Developer licence.${NC}"
+echo -e "${RED}can be unlocked by applying a licence.${NC}"
 echo
-echo -e "${GREEN}This cluster has been set up with an etcd based on ephemeral${NC}"
-echo -e "${GREEN}storage. It is suitable for evaluation purposes only - for${NC}"
-echo -e "${GREEN}production usage please see our etcd installation nodes at${NC}"
-echo -e "${GREEN}   https://docs.storageos.com/docs/prerequisites/etcd/${NC}"
+echo -e "${NC}This cluster has been set up with an etcd based on ephemeral${NC}"
+echo -e "${NC}storage. It is suitable for evaluation purposes only - for${NC}"
+echo -e "${NC}production usage please see our etcd installation nodes at${NC}"
+echo -e "${NC}   https://docs.storageos.com/docs/prerequisites/etcd/${NC}"
 echo 
