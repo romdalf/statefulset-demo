@@ -114,7 +114,7 @@ fi
 
 # Summary of what is on the menu for deployment today
 echo 
-echo -e "${NC}The script will deploy a ${NC}${Blue}Ondat cluster: ${NC}"
+echo -e "${NC}The script will deploy a ${NC}${BLUE}Ondat cluster: ${NC}"
 echo -e "  ${BLUE}Ondat${NC} cluster named ${RED}${STOS_CLUSTERNAME}${GREEN}.${NC}"
 echo -e "  ${BLUE}Ondat${NC} version ${RED}${STOS_VERSION}${NC} into namespace ${RED}${STOS_NAMESPACE}${GREEN}.${NC}"
 
