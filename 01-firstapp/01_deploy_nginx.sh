@@ -55,7 +55,7 @@ echo -e "   Content of ${BLUE}nginx_npv.yaml${NC}
                 app: nginx
             ---
             apiVersion: apps/v1
-            ${RED}kind: Deployment${NC}
+            ${RED}kind: Deployment${YELLOW}
             metadata:
               name: web
               namespace: web-npv
