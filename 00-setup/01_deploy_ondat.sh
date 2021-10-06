@@ -231,7 +231,7 @@ subjects:
 END
 
 echo -ne ".${GREEN}OK${NC}\n"
-echo -e "   CLI: ${BLUE}kubectl -n ETCD_NAMESPACE create -f- 1>/dev/null<<END${NC}
+echo -e "   CLI: ${BLUE}kubectl -n ${ETCD_NAMESPACE} create -f- 1>/dev/null<<END${NC}
             ${YELLOW}---
             apiVersion: rbac.authorization.k8s.io/v1
             kind: ClusterRoleBinding
