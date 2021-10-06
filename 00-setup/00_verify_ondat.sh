@@ -16,16 +16,6 @@ YELLOW='\033[0;33m'
 BLUE='\033[1;34m'
 NC='\033[0m' # No Color
 
-# spin the wheel to avoid nervous breakdown during waiting time
-sp="/-\|"
-spin() {
-    printf '\b%.1s' "$sp"
-    sp=${sp#?}${sp%???}
-}
-endspin() {
-    echo -ne '\b \b'
-}
-
 echo 
 echo -e "${NC}Verify Kubernetes environment to deploy ${BLUE}Ondat${NC} data plane."
 # Checking for the minimum node count (3)
@@ -62,4 +52,4 @@ else
     echo -ne ".${GREEN}NO${NC}\n"
 fi
 echo -e "   CLI: ${BLUE}kubectl get storageoscluster --all-namespaces -o name${NC}"
-
+echo 

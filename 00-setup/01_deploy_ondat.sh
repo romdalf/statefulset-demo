@@ -3,7 +3,6 @@
 # Script Name  :   01_deploy_ondat.sh                                                                                           
 # Description  :   Install Ondat Self-Evaluation Cluster                                                                              
 # Args         :   
-# Author       :   Ondat
 # Issues       :   Issues&PR https://github.com/rovandep/statefulset-demo.git
 #############################################################################
 
