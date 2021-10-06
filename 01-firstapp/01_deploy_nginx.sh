@@ -55,7 +55,7 @@ echo -e "   Content of ${BLUE}nginx_npv.yaml${NC}
                 app: nginx
             ---
             apiVersion: apps/v1
-            kind: Deployment
+            ${RED}kind: Deployment${NC}
             metadata:
               name: web
               namespace: web-npv
@@ -73,10 +73,7 @@ echo -e "   Content of ${BLUE}nginx_npv.yaml${NC}
                     - name: nginx
                       image: k8s.gcr.io/nginx-slim:0.8
                       ports:
-                        - containerPort: 80
-            ${NC}
-"
-echo
+                        - containerPort: 80${NC}"
 
 echo -ne "  Deploying web server with ${BLUE}Ondat${NC} persistent volume...................."
 
