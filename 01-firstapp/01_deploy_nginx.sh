@@ -30,7 +30,7 @@ fi
 echo -e "   CLI: ${BLUE}kubectl get storageoscluster --all-namespaces -o name${NC}"
  
 echo -ne "  Deploying web server without ${BLUE}Ondat${NC} persistent volume...................."
-kubectl apply -f 01-firstapp/nginx_npv.yaml
+kubectl apply -f 01-firstapp/nginx_npv.yaml 1>/dev/null
 echo -ne ".${GREEN}OK${NC}\n"
 echo -e "   CLI: ${BLUE}kubectl apply -f 01-firstapp/nginx_npv.yaml${NC}"
 
