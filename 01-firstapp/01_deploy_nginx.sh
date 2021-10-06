@@ -33,10 +33,54 @@ echo -ne "  Deploying web server without ${BLUE}Ondat${NC} persistent volume....
 kubectl apply -f 01-firstapp/nginx_npv.yaml 1>/dev/null
 echo -ne ".${GREEN}OK${NC}\n"
 echo -e "   CLI: ${BLUE}kubectl apply -f 01-firstapp/nginx_npv.yaml${NC}"
-
+echo -e "   Content of ${BLUE}nginx_npv.yaml${NC}
+            ${YELLOW}---
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: web-npv
+            ---
+            apiVersion: v1
+            kind: Service
+            metadata:
+              name: web-npv-service
+              namespace: web-npv
+              labels:
+                app: nginx
+            spec:
+              type: ClusterIP
+              ports:
+              - port: 80
+              selector:
+                app: nginx
+            ---
+            apiVersion: apps/v1
+            kind: Deployment
+            metadata:
+              name: web
+              namespace: web-npv
+            spec:
+              selector:
+                matchLabels:
+                  app: nginx
+              replicas: 1
+              template:
+                metadata:
+                  labels:
+                    app: nginx
+                spec:
+                  containers:
+                    - name: nginx
+                      image: k8s.gcr.io/nginx-slim:0.8
+                      ports:
+                        - containerPort: 80
+            ${NC}
+"
+echo
 
 echo -ne "  Deploying web server with ${BLUE}Ondat${NC} persistent volume...................."
 
+echo -ne ".${GREEN}OK${NC}\n"
 
 # echo -e "Deploying our first application!"
 # echo ""
