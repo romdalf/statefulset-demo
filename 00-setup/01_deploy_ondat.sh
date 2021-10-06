@@ -54,6 +54,7 @@ STOS_VERSION=${OPERATOR_VERSION}
 # Define some colours for later
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
 BLUE='\033[1;34m'
 NC='\033[0m' # No Color
 
@@ -98,6 +99,16 @@ then
     exit
 fi 
 echo -ne ".${GREEN}OK${NC} (${RED}${NODECOUNT}${NC})\n"
+
+# Checking for the k8s version
+echo -ne "  Checking Kubernetes version..........................."
+NODEVERSION=`kubectl get nodes -o jsonpath='{.items[]..kubeletVersion}'`
+if [[ ${NODEVERSION} =~ "22" ]]
+then 
+    echo -ne "${RED}NOK${NC} - k8s ${RED}${NODEVERSION}${NC} requires Ondat 2.5\n" 
+    exit
+fi 
+echo -ne ".${GREEN}OK${NC} (${RED}${NODEVERSION}${NC})\n"
 
 # Checking for an existing Ondat cluster on the kubernetes target
 echo -ne "  Checking for exiting ${BLUE}Ondat${NC} cluster...................."
@@ -187,6 +198,8 @@ then
     system:serviceaccount:${ETCD_NAMESPACE}:default
     sleep 5
     echo -ne "${GREEN}OK${NC}\n"
+    echo -e "   CLI: ${BLUE}oc adm policy add-scc-to-user anyuid system:serviceaccount:${ETCD_NAMESPACE}:default${NC}" 
+
 fi
 echo -ne ".${GREEN}NO${NC}\n"
 
@@ -218,6 +231,22 @@ subjects:
 END
 
 echo -ne ".${GREEN}OK${NC}\n"
+echo -e "   CLI: ${BLUE}kubectl -n ETCD_NAMESPACE create -f- 1>/dev/null<<END${NC}
+            ${YELLOW}---
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: ClusterRoleBinding
+            metadata:
+              name: etcd-operator
+            roleRef:
+              apiGroup: rbac.authorization.k8s.io
+              kind: ClusterRole
+              name: etcd-operator
+            subjects:
+            - kind: ServiceAccount
+              name: default
+              namespace: ${ETCD_NAMESPACE}
+            ${BLUE}END${NC}
+"
 
 
 echo -ne "  Creating etcd ClusterRole............................."
@@ -269,7 +298,52 @@ rules:
 END
 
 echo -ne ".${GREEN}OK${NC}\n"
-
+echo -e "   CLI: ${BLUE}kubectl -n ${ETCD_NAMESPACE} create -f- 1>/dev/null<<END${NC}
+            ${YELLOW}---
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: ClusterRole
+            metadata:
+              name: etcd-operator
+            rules:
+            - apiGroups:
+              - etcd.database.coreos.com
+              resources:
+              - etcdclusters
+              - etcdbackups
+              - etcdrestores
+              verbs:
+              - "*"
+            - apiGroups:
+              - apiextensions.k8s.io
+              resources:
+              - customresourcedefinitions
+              verbs:
+              - "*"
+            - apiGroups:
+              - ""
+              resources:
+              - pods
+              - services
+              - endpoints
+              - persistentvolumeclaims
+              - events
+              verbs:
+              - "*"
+            - apiGroups:
+              - apps
+              resources:
+              - deployments
+              verbs:
+              - "*"
+            # The following permissions can be removed if not using S3 backup and TLS
+            - apiGroups:
+              - ""
+              resources:
+              - secrets
+              verbs:
+              - get
+            ${BLUE}END${NC}
+"
 
 # Create etcd operator Deployment - this will deploy and manage the etcd
 # instances
@@ -306,6 +380,38 @@ spec:
 END
 
 echo -ne ".${GREEN}OK${NC}\n"
+echo -e "   CLI: ${BLUE}kubectl -n ${ETCD_NAMESPACE} create -f- 1>/dev/null<<END${NC}
+            ${YELLOW}---
+            apiVersion: apps/v1
+            kind: Deployment
+            metadata:
+              name: etcd-operator
+            spec:
+              replicas: 1
+              selector:
+                matchLabels:
+                  name: etcd-operator
+              template:
+                metadata:
+                  labels:
+                    name: etcd-operator
+                spec:
+                  containers:
+                  - name: etcd-operator
+                    image: quay.io/coreos/etcd-operator:v0.9.4
+                    command:
+                    - etcd-operator
+                    env:
+                    - name: MY_POD_NAMESPACE
+                      valueFrom:
+                        fieldRef:
+                          fieldPath: metadata.namespace
+                    - name: MY_POD_NAME
+                      valueFrom:
+                        fieldRef:
+                          fieldPath: metadata.name
+            ${BLUE}END${NC}
+"
 
 # Wait for etcd operator to become ready
 echo -ne "    Waiting on etcd operator to be running..............."
@@ -375,7 +481,59 @@ spec:
 END
 
 echo -ne ".${GREEN}OK${NC}\n"
-
+echo -e "   CLI: ${BLUE}kubectl -n ${ETCD_NAMESPACE} create -f- 1>/dev/null<<END${NC}
+            ${YELLOW}---
+            apiVersion: "etcd.database.coreos.com/v1beta2"
+            kind: "EtcdCluster"
+            metadata:
+              name: "storageos-etcd"
+            spec:
+              size: 3
+              version: "3.4.9"
+              pod:
+                etcdEnv:
+                - name: ETCD_QUOTA_BACKEND_BYTES
+                  value: "2589934592"  # ~2 GB
+                - name: ETCD_AUTO_COMPACTION_MODE
+                  value: "revision"
+                - name: ETCD_AUTO_COMPACTION_RETENTION
+                  value: "1000"
+            #  Modify the following requests and limits if required
+            #    requests:
+            #      cpu: 2
+            #      memory: 4G
+            #    limits:
+            #      cpu: 2
+            #      memory: 4G
+                resources:
+                  requests:
+                    cpu: 200m
+                    memory: 300Mi
+                securityContext:
+                  runAsNonRoot: true
+                  runAsUser: 9000
+                  fsGroup: 9000
+            # The following toleration allows us to run on a master node - modify to taste
+            #  Tolerations example
+            #    tolerations:
+            #    - key: "role"
+            #      operator: "Equal"
+            #      value: "etcd"
+            #      effect: "NoExecute"
+                affinity:
+                  podAntiAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                    - weight: 100
+                      podAffinityTerm:
+                        labelSelector:
+                          matchExpressions:
+                          - key: etcd_cluster
+                            operator: In
+                            values:
+                            - storageos-etcd
+                        topologyKey: kubernetes.io/hostname
+            ${BLUE}END${NC}
+"
 
 # Now that we have an etcd cluster starting, we need to install the Ondat
 # operator, which will manage the install of StorageOS itself.
@@ -383,7 +541,7 @@ echo -ne "  Creation ${BLUE}Ondat${NC} operator deployment...................."
 kubectl create --filename=https://github.com/storageos/cluster-operator/releases/download/${OPERATOR_VERSION}/storageos-operator.yaml 1>/dev/null
 
 echo -ne ".${GREEN}OK${NC} (${RED}${OPERATOR_VERSION}${NC})\n"
-
+echo -e "   CLI: ${BLUE}kubectl create --filename=https://github.com/storageos/cluster-operator/releases/download/${OPERATOR_VERSION}/storageos-operator.yaml${NC}"
 
 # Wait for the operator to become ready
 echo -ne "    Waiting on ${BLUE}Ondat${NC} operator to be running.............."
@@ -430,6 +588,31 @@ data:
 END
 
 echo -ne ".${GREEN}OK${NC}\n"
+echo -e "   CLI: ${BLUE}kubectl create -f- 1>/dev/null<<END${NC}
+            ${YELLOW}---
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              name: "storageos-api"
+              namespace: "storageos-operator"
+              labels:
+                app: "storageos"
+            type: "kubernetes.io/storageos"
+            data:
+              # echo -n '<secret>' | base64
+              apiUsername: c3RvcmFnZW9z
+              apiPassword: c3RvcmFnZW9z
+              # CSI Credentials
+              csiProvisionUsername: c3RvcmFnZW9z
+              csiProvisionPassword: c3RvcmFnZW9z
+              csiControllerPublishUsername: c3RvcmFnZW9z
+              csiControllerPublishPassword: c3RvcmFnZW9z
+              csiNodePublishUsername: c3RvcmFnZW9z
+              csiNodePublishPassword: c3RvcmFnZW9z
+              csiControllerExpandUsername: c3RvcmFnZW9z
+              csiControllerExpandPassword: c3RvcmFnZW9z
+           ${BLUE}END${NC}
+"
 
 # Now that we have the operator installed, and a secret defined, it is time to
 # install Ondat itself. We default to the kube-system namespace, which
@@ -445,6 +628,7 @@ then
   echo -ne "  Creating ${BLUE}Ondat${NC} cluster namespace............"
   kubectl create namespace ${STOS_NAMESPACE} 1>/dev/null
   echo -ne ".${GREEN}OK${NC} (${RED}${STOS_NAMESPACE}${NC})\n"
+  echo -e "   CLI: ${BLUE}kubectl create namespace ${STOS_NAMESPACE} 1>/dev/null${NC}"
 fi
 
 # In the Ondat CR we declare the DNS name for the etcd deployment and
@@ -469,6 +653,24 @@ spec:
 END
 
 echo -ne ".${GREEN}OK${NC} (${RED}${STOS_NAMESPACE}${NC})\n"
+echo -e "   CLI: ${BLUE}kubectl create -f- 1>/dev/null<<END${NC}
+            ${YELLOW}---
+            apiVersion: storageos.com/v1
+            kind: StorageOSCluster
+            metadata:
+             name: ${STOS_CLUSTERNAME}
+             namespace: ${STOS_NAMESPACE}
+            spec:
+             secretRefName: "storageos-api"
+             secretRefNamespace: "storageos-operator"
+             k8sDistro: "upstream"  # Set the Kubernetes distribution for your cluster (upstream, eks, aks, gke, rancher, dockeree,             openshift)
+             images:
+               nodeContainer: "storageos/node:${STOS_VERSION}" # StorageOS version
+             # storageClassName: fast # The storage class creates by the StorageOS operator is configurable
+             kvBackend:
+               address: "storageos-etcd-client.${ETCD_NAMESPACE}.svc:2379"
+           ${BLUE}END${NC}
+"
 
 # echo -ne "  Waiting on STORAGE${GREEN}OS${NC} pods to be running"
 # phase="$(kubectl --namespace=${STOS_NAMESPACE} describe storageoscluster ${STOS_CLUSTERNAME})"
@@ -517,7 +719,28 @@ spec:
 END
 
 echo -ne ".${GREEN}OK${NC}\n"
-
+echo -e "   CLI: ${BLUE}kubectl create -f- 1>/dev/null<<END${NC}
+            ${YELLOW}---
+            apiVersion: v1
+            kind: Pod
+            metadata:
+             name: cli
+             namespace: ${STOS_NAMESPACE}
+            spec:
+             containers:
+              - name: cli
+                image: storageos/cli:${CLI_VERSION}
+                command: [\"/bin/sh\"]
+                args: [\"-c\", \"while true; do sleep 999999; done\" ]
+                env:
+                - name: STORAGEOS_ENDPOINTS
+                  value: storageos:5705
+                - name: STORAGEOS_USERNAME
+                  value: storageos
+                - name: STORAGEOS_PASSWORD
+                  value: storageos
+           ${BLUE}END${NC}
+"
 
 # Check if Ondat cli is running
 echo -ne "    Waiting on ${BLUE}Ondat${NC} CLI pod to be running..............."
