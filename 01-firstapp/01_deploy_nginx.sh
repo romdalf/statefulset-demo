@@ -76,7 +76,7 @@ echo -e "   Content of ${BLUE}nginx_npv.yaml${NC}
                         - containerPort: 80${NC}"
 
 echo -ne "  Deploying web server with ${BLUE}Ondat${NC} persistent volume...................."
-kubectl apply -f 01-firstapp/nginx_wpv.yaml 1>/dev/null
+kubectl apply -f 01-firstapp/nginx_wepv.yaml 1>/dev/null
 echo -ne ".${GREEN}OK${NC}\n"
 echo -e "   CLI: ${BLUE}kubectl apply -f 01-firstapp/nginx_wpv.yaml${NC}"
 echo -e "   Content of ${BLUE}nginx_wpv.yaml${NC}
@@ -166,23 +166,3 @@ echo -e "   Content of ${BLUE}nginx_wpv.yaml${NC}
 # echo -e "--> Checking the status of the statefulset..."
 # echo -e "${BLUE}kubectl get all -n web-npv${NC}"
 # kubectl get all -n web-wpv 
-
-
-
-# echo -e "--> Checking the status of the statefulset"
-# echo -e "${BLUE}kubectl get all -n web${NC}"
-# kubectl get all -n web
-# echo ""
-# echo -e "--> Checking the creation of the PersistentVolumeClaim"
-# echo -e "${BLUE}kubectl get pvc -A${NC}"
-# kubectl get pvc -n web
-# echo "" 
-# echo -e "--> Checking the creation of the PersistentVolume"
-# echo -e "${BLUE}kubectl get pv${NC}"
-# kubectl get pv
-# echo ""
-# echo -e "--> Check the PersistentVolume from a StorageOS view"
-# echo -e "${BLUE}kubectl get pv${NC}"
-# kubectl exec -n kube-system -it cli -- storageos get volumes -n web
-# echo ""
-# echo -e "${BLUE}Simple like A, B, C!${NC}"
