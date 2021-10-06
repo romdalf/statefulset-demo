@@ -76,8 +76,66 @@ echo -e "   Content of ${BLUE}nginx_npv.yaml${NC}
                         - containerPort: 80${NC}"
 
 echo -ne "  Deploying web server with ${BLUE}Ondat${NC} persistent volume...................."
-
+kubectl apply -f 01-firstapp/nginx_wpv.yaml 1>/dev/null
 echo -ne ".${GREEN}OK${NC}\n"
+echo -e "   CLI: ${BLUE}kubectl apply -f 01-firstapp/nginx_wpv.yaml${NC}"
+echo -e "   Content of ${BLUE}nginx_wpv.yaml${NC}
+            ${YELLOW}---
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: web-wpv
+            ---
+            apiVersion: v1
+            kind: Service
+            metadata:
+              name: web-wpv-service
+              namespace: web-wpv
+              labels:
+                app: nginx
+            spec:
+              type: ClusterIP
+              ports:
+              - port: 80
+              selector:
+                app: nginx
+            ---
+            apiVersion: apps/v1
+            ${BLUE}kind: StatefulSet${YELLOW}
+            metadata:
+              name: web
+              namespace: web-wpv
+            spec:
+              selector:
+                matchLabels:
+                  app: nginx
+              serviceName: web-wpv-service
+              replicas: 1
+              template:
+                metadata:
+                  labels:
+                    app: nginx
+                spec:
+                  terminationGracePeriodSeconds: 10
+                  containers:
+                    - name: nginx
+                      image: k8s.gcr.io/nginx-slim:0.8
+                      ports:
+                        - containerPort: 80
+                      ${BLUE}volumeMounts:
+                        - name: nginx-pvc
+                          mountPath: /usr/share/nginx/html
+              volumeClaimTemplates:
+                - metadata:
+                    name: nginx-pvc
+                  spec:
+                    accessModes: ["ReadWriteOnce"]
+                    storageClassName: "fast"
+                    resources:
+                      requests:
+                        storage: 1Gi${NC}
+"
+
 
 # echo -e "Deploying our first application!"
 # echo ""
