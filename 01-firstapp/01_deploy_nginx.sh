@@ -19,12 +19,13 @@ NC='\033[0m' # No Color
 echo -ne "  Checking for exiting ${BLUE}Ondat${NC} cluster...................."
 if kubectl get storageoscluster --all-namespaces -o name &>/dev/null;
 then
-    echo -ne ".${GREEN}NO${NC}\n"
+    echo -ne ".${GREEN}YES${NC}\n"
+
+else 
+    echo -ne "${RED}NO${NC}\n"
     echo -e "  ${RED}/!\ ${NC}${BLUE}Ondat${NC} cluster${RED} is not deployed on this Kubernetes cluster."
     echo
     exit
-else 
-    echo -ne "${RED}YES${NC}\n"
 fi
 echo -e "   CLI: ${BLUE}kubectl get storageoscluster --all-namespaces -o name${NC}"
 echo 
