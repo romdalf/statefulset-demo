@@ -761,8 +761,7 @@ echo -ne ".${GREEN}OK${NC}\n"
 echo 
 echo -e "${NC}Your ${NC}${BLUE}Ondat${NC} Cluster ${GREEN}now is up and running!"
 echo
-echo -e "${NC}Get your Personal license - see${NC}"
-echo -e "${NC}   https://docs.storageos.com/docs/operations/licensing/${NC}"
+echo -e "${NC}Get your Personal license - see https://docs.storageos.com/docs/operations/licensing/${NC}"
 echo -e "${RED}A cluster can run unlicensed for 24 hours. Normal functioning of the cluster"
 echo -e "${RED}can be unlocked by applying a licence.${NC}"
 echo

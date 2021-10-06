@@ -63,27 +63,3 @@ else
 fi
 echo -e "   CLI: ${BLUE}kubectl get storageoscluster --all-namespaces -o name${NC}"
 
-
-
-echo -e "   CLI: ${BLUE}kubectl create -f- 1>/dev/null<<END${NC}
-            ${YELLOW}---
-            apiVersion: v1
-            kind: Pod
-            metadata:
-             name: cli
-             namespace: ${STOS_NAMESPACE}
-            spec:
-             containers:
-              - name: cli
-                image: storageos/cli:${CLI_VERSION}
-                command: [\"/bin/sh\"]
-                args: [\"-c\", \"while true; do sleep 999999; done\" ]
-                env:
-                - name: STORAGEOS_ENDPOINTS
-                  value: storageos:5705
-                - name: STORAGEOS_USERNAME
-                  value: storageos
-                - name: STORAGEOS_PASSWORD
-                  value: storageos
-           ${BLUE}END${NC}
-"
