@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: web-wpv
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-wpv-service
+  namespace: web-wpv
+  labels:
+    app: nginx
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: nginx
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+  namespace: web-wpv
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  serviceName: web-wpv-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: nginx
+          image: k8s.gcr.io/nginx-slim:0.8
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-pvc
+              mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+    - metadata:
+        name: nginx-pvc
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: "onereplica"
+        resources:
+          requests:
+            storage: 1Gi
