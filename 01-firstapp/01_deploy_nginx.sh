@@ -76,7 +76,7 @@ echo -e "   Content of ${BLUE}nginx_npv.yaml${NC}
                         - containerPort: 80${NC}"
 
 echo -ne "  Deploying web server with ${BLUE}Ondat${NC} persistent volume...................."
-kubectl apply -f 01-firstapp/nginx_wepv.yaml 1>/dev/null
+kubectl apply -f 01-firstapp/nginx_wpv.yaml 1>/dev/null
 echo -ne ".${GREEN}OK${NC}\n"
 echo -e "   CLI: ${BLUE}kubectl apply -f 01-firstapp/nginx_wpv.yaml${NC}"
 echo -e "   Content of ${BLUE}nginx_wpv.yaml${NC}
