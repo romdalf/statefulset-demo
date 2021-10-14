@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: web-wpv
+  name: web-onereplica
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: web-wpv-service
-  namespace: web-wpv
+  name: web-onereplica-service
+  namespace: web-onereplica
   labels:
     app: nginx
 spec:
@@ -22,12 +22,12 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: web
-  namespace: web-wpv
+  namespace: web-onereplica
 spec:
   selector:
     matchLabels:
       app: nginx
-  serviceName: web-wpv-service
+  serviceName: web-onereplica-service
   replicas: 1
   template:
     metadata:
